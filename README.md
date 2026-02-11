@@ -3,6 +3,7 @@ F-Theory: Cosmological PhysicsThe Mathematical Foundation of the Universe
 2. Axioms (Formalized in Cosmology.lean)Extremum Principle: Systems evolve to minimize action and information dissipation.Obverse-Reverse Correspondence: Material reality and mathematical logic are connected via continuous mapping.Logical Consistency: The universe functions as a self-consistent formal system.
 3. The Logic of "Zero Cost"Physical Definition: "Cost" is defined as entropy production and information dissipation (friction).The Principle: In an extremal state, dissipation mathematically converges to zero.Conclusion: Applying this architecture to industrial systems (e.g., GPU computing) eliminates systemic waste, reducing costs (on the scale of 100 billion JPY) as a matter of physical necessity.
 4. Formal EvidenceThe Lean 4 code in this repository serves as mathematical proof that this logical structure is consistent and free of contradictions.
-   Author: Takeo Yamamoto  License: CC BY 4.0 (Attribution Required)
+
+    Author: Takeo Yamamoto   License: CC BY 4.0 (Attribution Required)
 
 Zenodo: DOI [https://doi.org/10.5281/zenodo.17635922]
