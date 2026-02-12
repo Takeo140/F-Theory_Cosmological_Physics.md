@@ -13,20 +13,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup and Verify Theory
+      - name: Setup Lean and Mathlib
         run: |
-          # 1. Elan (Lean管理ツール) のインストール
+          # 1. Elanのインストール
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
-          
-          # 2. このステップ内でのパスの強制設定
           export PATH="$HOME/.elan/bin:$PATH"
-
-          # 3. ツールチェーンのインストールとデフォルト設定
           elan toolchain install leanprover/lean4:stable
           elan default leanprover/lean4:stable
 
-          echo "--- 検閲開始（宇宙物理学の数理チェック） ---"
-          
-          # 4. ファイル名の不一致を回避するため、リポジトリ内の全Leanファイルを自動検閲
-          # 存在しないファイルを探すのではなく、存在するファイルに対して lean を実行する
-          find . -name "*.lean" -maxdepth 2 -exec lean {} +
+          # 2. その場で「Lakeプロジェクト」として構成（Mathlibを呼び出す設定）
+          echo 'import Lake' > lakefile.lean
+          echo 'open Lake DSL' >> lakefile.lean
+          echo 'package cosmology' >> lakefile.lean
+          echo 'require mathlib from git "https://github.com/leanprover-community/mathlib4"' >> lakefile.lean
+          echo '[[lean_lib]]' >> lakefile.lean
+          echo 'name = "Cosmology"' >> lakefile.lean
+
+          # 3. Mathlibの取得（キャッシュを使って高速化）
+          lake update
+          lake exe cache get || true
+
+          echo "--- 検閲開始（Mathlibを用いた高度な数理チェック） ---"
+          # 4. Lake経由でビルド（これによりMathlibが正しく認識される）
+          lake build
