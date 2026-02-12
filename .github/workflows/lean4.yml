@@ -21,18 +21,17 @@ jobs:
           elan toolchain install leanprover/lean4:stable
           elan default leanprover/lean4:stable
 
-          # 2. その場で「Lakeプロジェクト」として構成（Mathlibを呼び出す設定）
+          # 2. lakefile.lean の作成（正しいLean DSL形式）
           echo 'import Lake' > lakefile.lean
           echo 'open Lake DSL' >> lakefile.lean
           echo 'package cosmology' >> lakefile.lean
           echo 'require mathlib from git "https://github.com/leanprover-community/mathlib4"' >> lakefile.lean
-          echo '[[lean_lib]]' >> lakefile.lean
-          echo 'name = "Cosmology"' >> lakefile.lean
+          echo 'lean_lib Cosmology' >> lakefile.lean
 
-          # 3. Mathlibの取得（キャッシュを使って高速化）
+          # 3. Mathlibの取得（キャッシュを使用して高速化）
           lake update
           lake exe cache get || true
 
           echo "--- 検閲開始（Mathlibを用いた高度な数理チェック） ---"
-          # 4. Lake経由でビルド（これによりMathlibが正しく認識される）
+          # 4. ビルド実行
           lake build
