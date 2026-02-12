@@ -12,19 +12,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Elan
+      - name: Setup and Verify Theory
         run: |
+          # 1. Elanのインストール
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
-
-      - name: Verify Cosmology Theory
-        run: |
-          # パスを確実に通す
           export PATH="$HOME/.elan/bin:$PATH"
-          
-          # ツールチェーンをインストールし、その場で「+バージョン名」で直接叩く
+
+          # 2. ツールチェーン（Lean 4 Stable）を明示的にセット
           elan toolchain install leanprover/lean4:stable
-          
-          # 宇宙物理学のファイルを直接検閲
-          # elan run ではなく、+stable を指定して直接実行
-          elan run leanprover/lean4:stable lean FTheoryCosmologicalImproved.lean
+          elan default leanprover/lean4:stable
+
+          # 3. 宇宙物理学のファイルを検閲
+          # ここで直接 'lake' や 'lean' を使う
+          echo "--- 検閲開始 ---"
+          lean FTheoryCosmologicalImproved.lean
