@@ -1,4 +1,4 @@
-name: Lean 4 CI
+name: Lean 4 Cosmology CI
 on:
   push:
     branches: [ main ]
@@ -17,20 +17,24 @@ jobs:
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
-      - name: Initialize Lake Project and Check
+      - name: Initialize Physics Environment
         run: |
-          # ツールチェーンの確定
-          elan default leanprover/lean4:stable
-          # 最小限のプロジェクト構成をその場で作る
+          # ツールチェーンのインストール
+          $HOME/.elan/bin/elan toolchain install leanprover/lean4:stable
+          $HOME/.elan/bin/elan default leanprover/lean4:stable
+          
+          # 宇宙物理学に必要な数学ライブラリ(Mathlib)の設定
           echo 'import Lake' > lakefile.lean
           echo 'open Lake DSL' >> lakefile.lean
-          echo 'package my_theory' >> lakefile.lean
+          echo 'package cosmology' >> lakefile.lean
           echo 'require mathlib from git "https://github.com/leanprover-community/mathlib4"' >> lakefile.lean
           
-          # ライブラリの取得（ここが少し時間がかかります）
-          elan run lake update
-          
-          # ファイルの型チェックを実行
-          # ※宇宙レポジトリなら下を FTheoryCosmologicalImproved.lean に変更
-          # ※メタ公理レポジトリなら下を MetaAxiomsImproved.lean に変更
-          elan run lean FTheoryCosmologicalImproved.lean          
+          # ライブラリのダウンロードとビルド（ここが一番時間がかかります）
+          $HOME/.elan/bin/elan run lake update
+          # 高速化のため、バイナリキャッシュの取得を試みる
+          $HOME/.elan/bin/elan run lake exe cache get || true
+
+      - name: Verify Cosmology Theory
+        run: |
+          # 宇宙物理学のファイルを検閲
+          $HOME/.elan/bin/elan run lean FTheoryCosmologicalImproved.lean
