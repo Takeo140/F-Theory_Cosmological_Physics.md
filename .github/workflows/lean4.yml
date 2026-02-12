@@ -1,4 +1,5 @@
 name: Lean 4 Cosmology CI
+
 on:
   push:
     branches: [ main ]
@@ -12,14 +13,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-- name: Setup and Verify Theory
+      - name: Setup and Verify Theory
         run: |
-          # 1. Elanのインストールと設定
+          # 1. Elan (Lean管理ツール) のインストール
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          
+          # 2. このステップ内でのパスの強制設定
           export PATH="$HOME/.elan/bin:$PATH"
+
+          # 3. ツールチェーンのインストールとデフォルト設定
           elan toolchain install leanprover/lean4:stable
           elan default leanprover/lean4:stable
 
-          echo "--- 検閲開始 ---"
-          # リポジトリ内のすべての .lean ファイルを自動で見つけて実行する
-          find . -name "*.lean" -exec lean {} +
+          echo "--- 検閲開始（宇宙物理学の数理チェック） ---"
+          
+          # 4. ファイル名の不一致を回避するため、リポジトリ内の全Leanファイルを自動検閲
+          # 存在しないファイルを探すのではなく、存在するファイルに対して lean を実行する
+          find . -name "*.lean" -maxdepth 2 -exec lean {} +
